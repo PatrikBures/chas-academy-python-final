@@ -1,6 +1,9 @@
 from simple_term_menu import TerminalMenu
 from prettytable import PrettyTable
 from enum import Enum
+from system_usage import *
+from time import sleep
+import psutil
 
 
 class AlarmTypes(Enum):
@@ -11,6 +14,20 @@ class AlarmTypes(Enum):
 alarms_percentage = []
 alarms_type = []
 
+
+def get_usage():
+
+    usage = {
+        AlarmTypes.CPU: -1.0,
+        AlarmTypes.RAM: -1.0,
+        AlarmTypes.DISK: -1.0
+    }
+    
+    usage[AlarmTypes.CPU] = psutil.cpu_percent(interval=1)
+    usage[AlarmTypes.RAM] = psutil.virtual_memory().percent
+    usage[AlarmTypes.DISK] = psutil.disk_usage('/').percent
+    
+    return usage
 def select_int_range(title, min, max):
     while True:
         num = ""
@@ -127,7 +144,36 @@ def show_alarm():
     input("Press enter to go back to main menu.")
 
 def start_monitoring_mode():
-    print("start mon mode")
+    if not alarms_type:
+        print("No alarms configured.")
+        return
+
+    print("Monitoring mode is active, press enter to return to main menu.")
+
+    while True:
+        try:
+            usage_current = get_usage()
+            usage_warning = {
+                AlarmTypes.CPU: 0.0,
+                AlarmTypes.RAM: 0.0,
+                AlarmTypes.DISK: 0.0
+            }
+
+            for type, percentage in zip(alarms_type, alarms_percentage):
+                # print(f"{type.name}, current: {usage_current[type]}%, alarm: {percentage}%, warning: {usage_warning[type]}%")
+                if usage_current[type] >= percentage and usage_current[type] > usage_warning[type]:
+                    usage_warning[type] = percentage
+
+            for type in usage_warning.keys():
+                if usage_warning[type] <= 0.0:
+                    continue
+                print(f"*** WARNING, {type.name} USAGE IS ABOVE/AT {usage_warning[type]}% ***")
+
+            sleep(1)
+
+        except KeyboardInterrupt:
+            break
+
 
 def remove_alarm():
     if not alarms_percentage:
