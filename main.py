@@ -1,10 +1,14 @@
 from simple_term_menu import TerminalMenu
+from enum import Enum
 
-alarms = {
-    "CPU": 0,
-    "RAM": 0,
-    "DISK": 0
-}
+class alarms():
+    percentage = []
+    type = []
+
+class AlarmTypes(Enum):
+    CPU = 0
+    RAM = 1
+    DISK = 2
 
 def select_int_range(title, min, max):
     while True:
@@ -68,29 +72,29 @@ def start_monitoring():
 def list_active_monitor():
     print("list")
 def create_alarm():
-    def update_alarm(alarm):
-        print(f"Current {alarm} alarm at {alarms[alarm]}%")
-        new_alarm = select_int_range(f"New {alarm} alarm (0-100)%: ", 0, 100)
+    def create_new_alarm(alarm_type: AlarmTypes):
+        new_alarm_value = select_int_range(f"New {alarm_type.name} alarm (0-100)%: ", 0, 100)
 
-        if new_alarm == -1:
+        if new_alarm_value == -1:
             return True
 
-        confirmed = confirm(f"Updating alarm for {alarm} from {alarms[alarm]}% to {new_alarm}%, are you sure?")
+        confirmed = confirm(f"Creating new alarm for {alarm_type.name} at {new_alarm_value}%, are you sure?")
         print()
 
         if confirmed:
-            alarms[alarm] = new_alarm
+            alarms.percentage.append(new_alarm_value)
+            alarms.type.append(alarm_type)
 
     def cpu():
-        update_alarm("CPU")
+        create_new_alarm(AlarmTypes.CPU)
         return True
 
     def ram():
-        update_alarm("RAM")
+        create_new_alarm(AlarmTypes.RAM)
         return True
 
     def disk():
-        update_alarm("DISK")
+        create_new_alarm(AlarmTypes.DISK)
         return True
 
     def back():
@@ -108,9 +112,8 @@ def create_alarm():
 
 
 def show_alarm():
-    # https://www.geeksforgeeks.org/python/sort-python-dictionary-by-value/
-    for alarm, value in sorted(alarms.items(), key=lambda item: item[1]):
-        print(f"{alarm}, {value}")
+    for percentage, type in sorted(list(zip(alarms.percentage, alarms.type))):
+        print(f"{type.name}, {percentage}")
 
 def start_monitoring_mode():
     print("start mon mode")
