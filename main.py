@@ -108,7 +108,10 @@ def create_alarm():
 
 
 def show_alarm():
-    print("show alarm")
+    # https://www.geeksforgeeks.org/python/sort-python-dictionary-by-value/
+    for alarm, value in sorted(alarms.items(), key=lambda item: item[1]):
+        print(f"{alarm}, {value}")
+
 def start_monitoring_mode():
     print("start mon mode")
 def remove_alarm():
