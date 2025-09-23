@@ -1,5 +1,10 @@
 from simple_term_menu import TerminalMenu
 
+alarms = {
+    "CPU": 0,
+    "RAM": 0,
+    "DISK": 0
+}
 
 def select_int_range(title, min, max):
     while True:
@@ -63,11 +68,6 @@ def start_monitoring():
 def list_active_monitor():
     print("list")
 def create_alarm():
-    alarms = {
-        "CPU": 0,
-        "RAM": 0,
-        "DISK": 0
-    }
     def update_alarm(alarm):
         print(f"Current {alarm} alarm at {alarms[alarm]}%")
         new_alarm = select_int_range(f"New {alarm} alarm (0-100)%: ", 0, 100)
