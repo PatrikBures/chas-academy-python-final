@@ -124,6 +124,8 @@ def show_alarm():
 
     print(table)
 
+    input("Press enter to go back to main menu.")
+
 def start_monitoring_mode():
     print("start mon mode")
 
