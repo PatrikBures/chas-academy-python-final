@@ -18,6 +18,21 @@ def select_int_range(title, min, max):
             return num
         else:
             print(f"Number not in range ({min}-{max})")
+def confirm(question):
+    while True:
+        ans = ""
+
+        try:
+            ans = input(f"{question} (Y/n): ")
+        except KeyboardInterrupt:
+            return False
+        
+        match ans.lower():
+            case "" | "y":
+                return True
+            case "n":
+                return False
+
 
 def select_action(actions, title = ""):
     options = []
@@ -48,34 +63,30 @@ def list_active_monitor():
     print("list")
 def create_alarm():
     alarms = {
-        "cpu": 0,
-        "ram": 0,
-        "disk": 0
+        "CPU": 0,
+        "RAM": 0,
+        "DISK": 0
     }
-    def cpu():
-        print(f"Current CPU alarm at {alarms["cpu"]}%")
-        new_alarm = select_int_range(f"New CPU alarm (0-100)%: ", 0, 100)
+    def update_alarm(alarm):
+        print(f"Current {alarm} alarm at {alarms[alarm]}%")
+        new_alarm = select_int_range(f"New {alarm} alarm (0-100)%: ", 0, 100)
 
         if new_alarm == -1:
             return True
 
-        alarms["cpu"] = new_alarm
+        confirmed = confirm(f"Updating alarm for {alarm} from {alarms[alarm]}% to {new_alarm}%, are you sure?")
+
+        if confirmed:
+            alarms[alarm] = new_alarm
+
+    def cpu():
+        update_alarm("CPU")
 
     def ram():
-        new_alarm = select_int_range(f"New Ram alarm (0-100)%: ", 0, 100) 
-
-        if new_alarm == -1:
-            return True
-
-        alarms["ram"] = new_alarm
+        update_alarm("RAM")
 
     def disk():
-        new_alarm = select_int_range("New Disk alarm(0-100)%: ", 0, 100)
-
-        if new_alarm == -1:
-            return True
-
-        alarms["disk"] = new_alarm
+        update_alarm("DISK")
 
     def back():
         return True
