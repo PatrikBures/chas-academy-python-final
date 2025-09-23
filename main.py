@@ -96,20 +96,26 @@ def list_active_monitor():
     print("list")
 
 def create_alarm():
-    def create_new_alarm(alarm_type: AlarmTypes):
+    def create_new_alarm(new_alarm_type: AlarmTypes):
         new_alarm_threshold = -2
 
-        new_alarm_threshold = select_int_range(f"New {alarm_type.name} alarm (1-100)%: ", 1, 100)
+        new_alarm_threshold = select_int_range(f"New {new_alarm_type.name} alarm (1-100)%: ", 1, 100)
 
         if new_alarm_threshold < 1:
             return True
 
-        confirmed = confirm(f"Creating new alarm for {alarm_type.name} with threshold {new_alarm_threshold}%, are you sure?")
+
+        for alarm in alarms:
+            if alarm.type == new_alarm_type and alarm.threshold == new_alarm_threshold:
+                print(f"{new_alarm_type.name} alarm with threshold {new_alarm_threshold}% already exists.")
+                return
+
+        confirmed = confirm(f"Creating new alarm for {new_alarm_type.name} with threshold {new_alarm_threshold}%, are you sure?")
         print()
 
         if confirmed:
-            alarm = Alarm(alarm_type, new_alarm_threshold)
-            alarms.append(alarm)
+            new_alarm = Alarm(new_alarm_type, new_alarm_threshold)
+            alarms.append(new_alarm)
 
     def cpu():
         create_new_alarm(AlarmTypes.CPU)
