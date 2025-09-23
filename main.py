@@ -10,8 +10,13 @@ class AlarmTypes(Enum):
     RAM = 1
     DISK = 2
 
-alarms_percentage = []
-alarms_type = []
+class Alarm:
+    def __init__(self, alarm_type, threshold):
+        self.type = alarm_type
+        self.threshold = threshold
+
+alarms = []
+is_monitoring = False
 
 
 def get_usage():
@@ -86,23 +91,25 @@ def select_action(actions, title = ""):
 
 def start_monitoring():
     print("start monitoring")
+
 def list_active_monitor():
     print("list")
+
 def create_alarm():
     def create_new_alarm(alarm_type: AlarmTypes):
-        new_alarm_value = -2
+        new_alarm_threshold = -2
 
-        new_alarm_value = select_int_range(f"New {alarm_type.name} alarm (1-100)%: ", 1, 100)
+        new_alarm_threshold = select_int_range(f"New {alarm_type.name} alarm (1-100)%: ", 1, 100)
 
-        if new_alarm_value < 1:
+        if new_alarm_threshold < 1:
             return True
 
-        confirmed = confirm(f"Creating new alarm for {alarm_type.name} at {new_alarm_value}%, are you sure?")
+        confirmed = confirm(f"Creating new alarm for {alarm_type.name} with threshold {new_alarm_threshold}%, are you sure?")
         print()
 
         if confirmed:
-            alarms_percentage.append(new_alarm_value)
-            alarms_type.append(alarm_type)
+            alarm = Alarm(alarm_type, new_alarm_threshold)
+            alarms.append(alarm)
 
     def cpu():
         create_new_alarm(AlarmTypes.CPU)
@@ -135,15 +142,15 @@ def show_alarm():
     table.align["Alarm type"] = "l"
     table.align["Alarm %"] = "r"
 
-    for type, percentage in sorted(zip(alarms_type, alarms_percentage), key=lambda x: x[1]):
-        table.add_row([type.name, f"{percentage}%"])
+    for alarm in sorted(alarms, key=lambda x: x.threshold):
+        table.add_row([alarm.type.name, f"{alarm.threshold}%"])
 
     print(table)
 
     input("Press enter to go back to main menu.")
 
 def start_monitoring_mode():
-    if not alarms_type:
+    if not alarms:
         print("No alarms configured.")
         return
 
@@ -164,10 +171,10 @@ def start_monitoring_mode():
                 AlarmTypes.DISK: 0.0
             }
 
-            for type, percentage in zip(alarms_type, alarms_percentage):
+            for alarm in alarms:
                 # print(f"{type.name}, current: {usage_current[type]}%, alarm: {percentage}%, warning: {usage_warning[type]}%")
-                if usage_current[type] >= percentage and usage_current[type] > usage_warning[type]:
-                    usage_warning[type] = percentage
+                if usage_current[alarm.type] >= alarm.threshold and usage_current[alarm.type] > usage_warning[alarm.type]:
+                    usage_warning[alarm.type] = alarm.threshold
 
             for type in usage_warning.keys():
                 if usage_warning[type] <= 0.0:
@@ -181,14 +188,14 @@ def start_monitoring_mode():
 
 
 def remove_alarm():
-    if not alarms_percentage:
+    if not alarms:
         print("No alarms to remove")
         return
 
     options = []
 
-    for idx in range(len(alarms_percentage)):
-        options.append(f"{alarms_type[idx].name} {alarms_percentage[idx]}%")
+    for alarm in alarms:
+        options.append(f"{alarm.type.name} {alarm.threshold}%")
     
     terminal_menu = TerminalMenu(options, title="Pick alarms with <Space> to delete: ", multi_select=True)
 
@@ -198,8 +205,7 @@ def remove_alarm():
 
     if type(indexes_to_delete) == tuple:
         for idx in indexes_to_delete:
-            alarms_percentage.pop(idx)
-            alarms_type.pop(idx)
+            alarms.pop(idx)
             removed_alarms += 1
 
     print(f"Removed {removed_alarms} alarm/s")
