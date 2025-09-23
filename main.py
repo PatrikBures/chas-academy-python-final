@@ -1,5 +1,4 @@
 from simple_term_menu import TerminalMenu
-import sys
 
 
 def select_int_range(title, min, max):
@@ -40,7 +39,7 @@ def select_action(actions, title = ""):
                 exit_loop = action()
 
                 if exit_loop:
-                    return
+                    return True
         else: 
             return True
 
@@ -101,7 +100,7 @@ def start_monitoring_mode():
 def remove_alarm():
     print("remove alarm")
 def _exit():
-    sys.exit()
+    return True
 
 def main():
     actions = {
