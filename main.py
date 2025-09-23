@@ -83,12 +83,15 @@ def create_alarm():
 
     def cpu():
         update_alarm("CPU")
+        return True
 
     def ram():
         update_alarm("RAM")
+        return True
 
     def disk():
         update_alarm("DISK")
+        return True
 
     def back():
         return True
