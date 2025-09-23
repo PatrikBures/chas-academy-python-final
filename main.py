@@ -1,4 +1,5 @@
 from simple_term_menu import TerminalMenu
+from prettytable import PrettyTable
 from enum import Enum
 
 class alarms():
@@ -73,10 +74,14 @@ def list_active_monitor():
     print("list")
 def create_alarm():
     def create_new_alarm(alarm_type: AlarmTypes):
+        new_alarm_value = -2
+
         new_alarm_value = select_int_range(f"New {alarm_type.name} alarm (0-100)%: ", 0, 100)
 
         if new_alarm_value == -1:
             return True
+        elif new_alarm_value == -2:
+            print("how?")
 
         confirmed = confirm(f"Creating new alarm for {alarm_type.name} at {new_alarm_value}%, are you sure?")
         print()
@@ -105,15 +110,21 @@ def create_alarm():
         "Ram usage": ram,
         "Disk usage": disk,
         "Back": back
-
     }
 
     select_action(actions, "Select alarm to configure")
 
 
 def show_alarm():
-    for percentage, type in sorted(list(zip(alarms.percentage, alarms.type))):
-        print(f"{type.name}, {percentage}")
+    table = PrettyTable()
+    table.field_names = ["Alarm type", "Alarm %"]
+    table.align["Alarm type"] = "l"
+    table.align["Alarm %"] = "r"
+
+    for type, percentage in sorted(zip(alarms.type, alarms.percentage), key=lambda x: x[1]):
+        table.add_row([type.name, f"{percentage}%"])
+
+    print(table)
 
 def start_monitoring_mode():
     print("start mon mode")
@@ -127,7 +138,7 @@ def main():
         "start monitoring": start_monitoring,
         "List active monitor": list_active_monitor,
         "Create alarm": create_alarm,
-        "Show alarm": show_alarm,
+        "Show alarms": show_alarm,
         "Start monitoring mode": start_monitoring_mode,
         "Remove alarm": remove_alarm,
         "Exit": _exit
