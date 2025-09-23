@@ -126,8 +126,32 @@ def show_alarm():
 
 def start_monitoring_mode():
     print("start mon mode")
+
 def remove_alarm():
-    print("remove alarm")
+    if not alarms_percentage:
+        print("No alarms to remove")
+        return
+
+    options = []
+
+    for idx in range(len(alarms_percentage)):
+        options.append(f"{alarms_type[idx].name} {alarms_percentage[idx]}%")
+    
+    terminal_menu = TerminalMenu(options, title="Pick alarms to delete: ", multi_select=True)
+
+    indexes_to_delete = terminal_menu.show()
+
+    removed_alarms = 0
+
+    if type(indexes_to_delete) == tuple:
+        for idx in indexes_to_delete:
+            alarms_percentage.pop(idx)
+            alarms_type.pop(idx)
+            removed_alarms += 1
+
+    print(f"Removed {removed_alarms} alarm/s")
+
+
 def _exit():
     return True
 
