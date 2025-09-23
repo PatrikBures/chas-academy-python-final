@@ -152,7 +152,7 @@ def start_monitoring_mode():
     while True:
         if loop >= 20:
             loop = 0
-            print("Monitoring mode is active, press Ctrl+C to return to main menu.")
+            print("Monitoring mode is active, press <Ctrl+c> to return to main menu.")
         loop += 1
 
         try:
@@ -189,7 +189,7 @@ def remove_alarm():
     for idx in range(len(alarms_percentage)):
         options.append(f"{alarms_type[idx].name} {alarms_percentage[idx]}%")
     
-    terminal_menu = TerminalMenu(options, title="Pick alarms to delete: ", multi_select=True)
+    terminal_menu = TerminalMenu(options, title="Pick alarms with <Space> to delete: ", multi_select=True)
 
     indexes_to_delete = terminal_menu.show()
 
