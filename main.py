@@ -20,7 +20,7 @@ def select_int_range(title, min, max):
         if min <= num <= max:
             return num
         else:
-            print(f"Number not in range ({min} - {max})")
+            print(f"Number not in range ({min}-{max})")
 
 def select_action(actions, title = ""):
     options = []
