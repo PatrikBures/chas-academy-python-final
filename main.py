@@ -11,8 +11,6 @@ def select_int_range(title, min, max):
 
         try:
             num = int(num)
-        except KeyboardInterrupt:
-            return -1
         except ValueError:
             print("Not a number!")
             continue
