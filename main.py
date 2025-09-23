@@ -12,12 +12,13 @@ def select_int_range(title, min, max):
         try:
             num = int(num)
         except ValueError:
-            print("Not a number!")
+            print("Not a number!\n")
             continue
         if min <= num <= max:
             return num
         else:
-            print(f"Number not in range ({min}-{max})")
+            print(f"Number not in range ({min}-{max})\n")
+
 def confirm(question):
     while True:
         ans = ""
@@ -75,6 +76,7 @@ def create_alarm():
             return True
 
         confirmed = confirm(f"Updating alarm for {alarm} from {alarms[alarm]}% to {new_alarm}%, are you sure?")
+        print()
 
         if confirmed:
             alarms[alarm] = new_alarm
