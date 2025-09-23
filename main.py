@@ -1,7 +1,6 @@
 from simple_term_menu import TerminalMenu
 from prettytable import PrettyTable
 from enum import Enum
-from system_usage import *
 from time import sleep
 import psutil
 
