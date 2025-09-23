@@ -147,13 +147,14 @@ def start_monitoring_mode():
         print("No alarms configured.")
         return
 
+    loop_max = 20
+    loop_num = loop_max
 
-    loop = 1000
     while True:
-        if loop >= 20:
-            loop = 0
+        if loop_num >= loop_max:
+            loop_num = 0
             print("Monitoring mode is active, press <Ctrl+c> to return to main menu.")
-        loop += 1
+        loop_num += 1
 
         try:
             usage_current = get_usage()
