@@ -93,9 +93,9 @@ def create_alarm():
     def create_new_alarm(alarm_type: AlarmTypes):
         new_alarm_value = -2
 
-        new_alarm_value = select_int_range(f"New {alarm_type.name} alarm (0-100)%: ", 0, 100)
+        new_alarm_value = select_int_range(f"New {alarm_type.name} alarm (1-100)%: ", 1, 100)
 
-        if new_alarm_value < 0:
+        if new_alarm_value < 1:
             return True
 
         confirmed = confirm(f"Creating new alarm for {alarm_type.name} at {new_alarm_value}%, are you sure?")
