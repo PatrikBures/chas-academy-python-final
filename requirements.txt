@@ -1,1 +1,2 @@
 simple-term-menu==1.6.6
+prettytable==3.16.0
