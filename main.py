@@ -2,14 +2,14 @@ from simple_term_menu import TerminalMenu
 from prettytable import PrettyTable
 from enum import Enum
 
-class alarms():
-    percentage = []
-    type = []
 
 class AlarmTypes(Enum):
     CPU = 0
     RAM = 1
     DISK = 2
+
+alarms_percentage = []
+alarms_type = []
 
 def select_int_range(title, min, max):
     while True:
@@ -85,8 +85,8 @@ def create_alarm():
         print()
 
         if confirmed:
-            alarms.percentage.append(new_alarm_value)
-            alarms.type.append(alarm_type)
+            alarms_percentage.append(new_alarm_value)
+            alarms_type.append(alarm_type)
 
     def cpu():
         create_new_alarm(AlarmTypes.CPU)
@@ -119,7 +119,7 @@ def show_alarm():
     table.align["Alarm type"] = "l"
     table.align["Alarm %"] = "r"
 
-    for type, percentage in sorted(zip(alarms.type, alarms.percentage), key=lambda x: x[1]):
+    for type, percentage in sorted(zip(alarms_type, alarms_percentage), key=lambda x: x[1]):
         table.add_row([type.name, f"{percentage}%"])
 
     print(table)
