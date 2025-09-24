@@ -25,18 +25,11 @@ def confirm_return(title = ""):
         pass
 
 def get_usage():
-
-    usage = {
-        AlarmTypes.CPU: -1.0,
-        AlarmTypes.RAM: -1.0,
-        AlarmTypes.DISK: -1.0
+    return {
+        AlarmTypes.CPU: psutil.cpu_percent(interval=1),
+        AlarmTypes.RAM: psutil.virtual_memory(),
+        AlarmTypes.DISK: psutil.disk_usage('/')
     }
-    
-    usage[AlarmTypes.CPU] = psutil.cpu_percent(interval=1)
-    usage[AlarmTypes.RAM] = psutil.virtual_memory().percent
-    usage[AlarmTypes.DISK] = psutil.disk_usage('/').percent
-    
-    return usage
 def select_int_range(title, min, max):
     while True:
         num = ""
@@ -184,6 +177,10 @@ def start_monitoring_mode():
 
         try:
             usage_current = get_usage()
+
+            usage_current[AlarmTypes.RAM] = usage_current[AlarmTypes.RAM].percent
+            usage_current[AlarmTypes.DISK] = usage_current[AlarmTypes.DISK].percent
+
             usage_warning = {
                 AlarmTypes.CPU: 0.0,
                 AlarmTypes.RAM: 0.0,
