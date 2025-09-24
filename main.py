@@ -114,9 +114,9 @@ def show_alarm():
         return
 
     table = PrettyTable()
-    table.field_names = ["Alarm type", "Alarm %"]
-    table.align["Alarm type"] = "l"
-    table.align["Alarm %"] = "r"
+    table.field_names = ["Type", "Threshold"]
+    table.align["Type"] = "l"
+    table.align["Threshold"] = "r"
 
     for alarm in sorted(alarms, key=lambda x: x.threshold):
         table.add_row([alarm.type.name, f"{alarm.threshold}%"])
