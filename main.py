@@ -30,6 +30,10 @@ def get_usage():
         AlarmTypes.RAM: psutil.virtual_memory(),
         AlarmTypes.DISK: psutil.disk_usage('/')
     }
+
+def convert_to_gb(num):
+    return round(num / 1024 / 1024 / 1024, 2)
+
 def select_int_range(title, min, max):
     while True:
         num = ""
@@ -95,7 +99,26 @@ def start_monitoring():
     confirm_return("Monitoring started. ")
 
 def list_active_monitor():
-    print("list")
+    if not is_monitoring:
+        confirm_return("Monitoring is not active. ")
+        return
+    
+    usage = get_usage()
+
+    table = PrettyTable()
+    table.field_names = ["Type", "Usage %", "Usage", "Total"]
+    table.align["Type"] = "l"
+    table.align["Usage %"] = "r"
+    table.align["Usage"] = "r"
+    table.align["Total"] = "r"
+
+    table.add_row(["CPU", f"{usage[AlarmTypes.CPU]}%", "N/A", "N/A"])
+    table.add_row(["RAM", f"{usage[AlarmTypes.RAM].percent}%", f"{convert_to_gb(usage[AlarmTypes.RAM].used)} GB", f"{convert_to_gb(usage[AlarmTypes.RAM].total)} GB"])
+    table.add_row(["DISK", f"{usage[AlarmTypes.DISK].percent}%", f"{convert_to_gb(usage[AlarmTypes.DISK].used)} GB", f"{convert_to_gb(usage[AlarmTypes.DISK].total)} GB"])
+
+    print(table)
+
+    confirm_return()
 
 def create_alarm():
     def create_new_alarm(new_alarm_type: AlarmTypes):
