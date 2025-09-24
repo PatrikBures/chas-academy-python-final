@@ -95,7 +95,11 @@ def select_action(actions, title = ""):
 
 
 def start_monitoring():
-    print("start monitoring")
+    global is_monitoring
+
+    is_monitoring = True
+
+    confirm_return("Monitoring started. ")
 
 def list_active_monitor():
     print("list")
