@@ -4,6 +4,8 @@ from enum import Enum
 from time import sleep
 import psutil
 
+import menu
+
 
 class AlarmTypes(Enum):
     CPU = 0
@@ -18,11 +20,6 @@ class Alarm:
 alarms = []
 is_monitoring = False
 
-def confirm_return(title = ""):
-    try:
-        input(f"{title}Press <Enter> to return. ")
-    except KeyboardInterrupt:
-        pass
 
 def get_usage():
     return {
@@ -34,61 +31,6 @@ def get_usage():
 def convert_to_gb(num):
     return round(num / 1024 / 1024 / 1024, 2)
 
-def select_int_range(title, min, max):
-    while True:
-        num = ""
-        try:
-            num = input(title)
-        except KeyboardInterrupt:
-            return -1
-
-        try:
-            num = int(num)
-        except ValueError:
-            print("Not a number!\n")
-            continue
-        if min <= num <= max:
-            return num
-        else:
-            print(f"Number not in range ({min}-{max})\n")
-
-def confirm(question):
-    while True:
-        ans = ""
-
-        try:
-            ans = input(f"{question} (Y/n): ")
-        except KeyboardInterrupt:
-            return False
-        
-        match ans.lower():
-            case "" | "y":
-                return True
-            case "n":
-                return False
-
-
-def select_action(actions, title = ""):
-    options = []
-    for opt in actions.keys():
-        options.append(opt)
-
-    terminal_menu = TerminalMenu(options, title=title)
-
-    while True:
-        menu_entry_index = terminal_menu.show()
-
-        if type(menu_entry_index) == int:
-            selected_option = options[menu_entry_index]
-            action = actions[selected_option]
-
-            if action:
-                exit_loop = action()
-
-                if exit_loop:
-                    return True
-        else: 
-            return True
 
 
 def start_monitoring():
@@ -96,11 +38,11 @@ def start_monitoring():
 
     is_monitoring = True
 
-    confirm_return("Monitoring started. ")
+    menu.confirm_return("Monitoring started. ")
 
 def list_active_monitor():
     if not is_monitoring:
-        confirm_return("Monitoring is not active. ")
+        menu.confirm_return("Monitoring is not active. ")
         return
     
     usage = get_usage()
@@ -118,13 +60,13 @@ def list_active_monitor():
 
     print(table)
 
-    confirm_return()
+    menu.confirm_return()
 
 def create_alarm():
     def create_new_alarm(new_alarm_type: AlarmTypes):
         new_alarm_threshold = -2
 
-        new_alarm_threshold = select_int_range(f"New {new_alarm_type.name} alarm (1-100)%: ", 1, 100)
+        new_alarm_threshold = menu.select_int_range(f"New {new_alarm_type.name} alarm (1-100)%: ", 1, 100)
 
         if new_alarm_threshold < 1:
             return True
@@ -135,7 +77,7 @@ def create_alarm():
                 print(f"{new_alarm_type.name} alarm with threshold {new_alarm_threshold}% already exists.")
                 return
 
-        confirmed = confirm(f"Creating new alarm for {new_alarm_type.name} with threshold {new_alarm_threshold}%, are you sure?")
+        confirmed = menu.confirm(f"Creating new alarm for {new_alarm_type.name} with threshold {new_alarm_threshold}%, are you sure?")
         print()
 
         if confirmed:
@@ -164,12 +106,12 @@ def create_alarm():
         "Back": back
     }
 
-    select_action(actions, "Select alarm to configure")
+    menu.select_action(actions, "Select alarm to configure")
 
 
 def show_alarm():
     if not alarms:
-        confirm_return("No alarms configured. ")
+        menu.confirm_return("No alarms configured. ")
         return
 
     table = PrettyTable()
@@ -182,11 +124,11 @@ def show_alarm():
 
     print(table)
 
-    confirm_return()
+    menu.confirm_return()
 
 def start_monitoring_mode():
     if not alarms:
-        confirm_return("No alarms configured. ")
+        menu.confirm_return("No alarms configured. ")
         return
 
     loop_max = 20
@@ -228,7 +170,7 @@ def start_monitoring_mode():
 
 def remove_alarm():
     if not alarms:
-        confirm_return("No alarms to remove. ")
+        menu.confirm_return("No alarms to remove. ")
         return
 
     options = []
@@ -269,7 +211,7 @@ def main():
 
 
     while True:
-        exit_loop = select_action(actions)
+        exit_loop = menu.select_action(actions)
 
         if exit_loop:
             break
