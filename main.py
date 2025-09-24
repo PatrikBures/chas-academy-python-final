@@ -74,11 +74,10 @@ def create_alarm():
 
         for alarm in alarms:
             if alarm.type == new_alarm_type and alarm.threshold == new_alarm_threshold:
-                print(f"{new_alarm_type.name} alarm with threshold {new_alarm_threshold}% already exists.")
+                menu.confirm_return(f"{new_alarm_type.name} alarm with threshold {new_alarm_threshold}% already exists. ")
                 return
 
         confirmed = menu.confirm(f"Creating new alarm for {new_alarm_type.name} with threshold {new_alarm_threshold}%, are you sure?")
-        print()
 
         if confirmed:
             new_alarm = Alarm(new_alarm_type, new_alarm_threshold)
@@ -192,7 +191,7 @@ def remove_alarm():
             alarms.pop(idx)
             removed_alarms += 1
 
-    print(f"Removed {removed_alarms} alarm/s")
+    menu.confirm_return(f"Removed {removed_alarms} alarm/s. ")
 
 
 def _exit():
