@@ -156,10 +156,17 @@ def start_monitoring_mode():
                 if usage_current[alarm.type] >= alarm.threshold and usage_current[alarm.type] > usage_warning[alarm.type]:
                     usage_warning[alarm.type] = alarm.threshold
 
+            warned = False
+
             for type in usage_warning.keys():
                 if usage_warning[type] <= 0.0:
                     continue
+
                 print(f"*** WARNING, {type.name} USAGE IS ABOVE/AT {usage_warning[type]}% ***")
+                warned = True
+
+            if warned:
+                print()
 
             sleep(1)
 
