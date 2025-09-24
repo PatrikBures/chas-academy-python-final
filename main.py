@@ -18,6 +18,11 @@ class Alarm:
 alarms = []
 is_monitoring = False
 
+def confirm_return(title = ""):
+    try:
+        input(f"{title}Press <Enter> to return. ")
+    except KeyboardInterrupt:
+        pass
 
 def get_usage():
 
@@ -143,6 +148,10 @@ def create_alarm():
 
 
 def show_alarm():
+    if not alarms:
+        confirm_return("No alarms configured. ")
+        return
+
     table = PrettyTable()
     table.field_names = ["Alarm type", "Alarm %"]
     table.align["Alarm type"] = "l"
@@ -153,11 +162,11 @@ def show_alarm():
 
     print(table)
 
-    input("Press enter to go back to main menu.")
+    confirm_return()
 
 def start_monitoring_mode():
     if not alarms:
-        print("No alarms configured.")
+        confirm_return("No alarms configured. ")
         return
 
     loop_max = 20
@@ -195,7 +204,7 @@ def start_monitoring_mode():
 
 def remove_alarm():
     if not alarms:
-        print("No alarms to remove")
+        confirm_return("No alarms to remove. ")
         return
 
     options = []
@@ -203,14 +212,17 @@ def remove_alarm():
     for alarm in alarms:
         options.append(f"{alarm.type.name} {alarm.threshold}%")
     
-    terminal_menu = TerminalMenu(options, title="Pick alarms with <Space> to delete: ", multi_select=True)
+    terminal_menu = TerminalMenu(options, title="Pick alarms to with <Space>, then press <Enter> to delete selected alarms: ", multi_select=True)
 
     indexes_to_delete = terminal_menu.show()
 
     removed_alarms = 0
 
     if type(indexes_to_delete) == tuple:
-        for idx in indexes_to_delete:
+
+        indexes_to_delete_reversed = indexes_to_delete[::-1]
+
+        for idx in indexes_to_delete_reversed:
             alarms.pop(idx)
             removed_alarms += 1
 
@@ -222,7 +234,7 @@ def _exit():
 
 def main():
     actions = {
-        "start monitoring": start_monitoring,
+        "Start monitoring": start_monitoring,
         "List active monitor": list_active_monitor,
         "Create alarm": create_alarm,
         "Show alarms": show_alarm,
