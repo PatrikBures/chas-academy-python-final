@@ -28,11 +28,11 @@ python -m venv venv
 
 Install required packages
 ```
-.\venv\Scripts\pip install -r .\requirements.txt
+venv\Scripts\pip install -r requirements.txt
 ```
 
 Run program:
 ```
-.\venv\Scripts\python .\main.py
+venv\Scripts\python main.py
 ```
 
