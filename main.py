@@ -201,7 +201,7 @@ def start_monitoring_mode():
                 if usage_warning[type] <= 0.0:
                     continue
 
-                print(f"*** WARNING, {type.name} USAGE IS ABOVE/AT {usage_warning[type]}% ***")
+                print(f"*** WARNING, {type.name} USAGE IS ABOVE OR {usage_warning[type]}% ***")
                 warned = True
 
             if warned:
