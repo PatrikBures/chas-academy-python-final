@@ -118,6 +118,7 @@ def create_alarm():
             new_alarm = Alarm(new_alarm_type, new_alarm_threshold)
             alarms.append(new_alarm)
             storage.save_alarms(alarms)
+            log(f"{new_alarm.type.name}_{new_alarm.threshold}_alarm_created")
 
 
     def cpu():
@@ -166,6 +167,8 @@ def start_monitoring_mode():
         menu.confirm_return("No alarms configured. ")
         return
 
+    log("monitoring_mode_started")
+
     loop_max = 20
     loop_num = loop_max
 
@@ -203,6 +206,7 @@ def start_monitoring_mode():
                     continue
 
                 print(f"*** WARNING, {type.name} USAGE IS ABOVE/AT {usage_warning[type]}% ***")
+                log(f"{type.name}_{usage_warning[type]}_alarm_activated")
                 warned = True
 
             if warned:
@@ -231,6 +235,7 @@ def remove_alarm():
     removed_alarms = 0
 
     for idx in reversed(indexes_to_delete):
+        log(f"{alarms[idx].type.name}_{alarms[idx].threshold}_alarm_deleted")
         alarms.pop(idx)
         removed_alarms += 1
 
