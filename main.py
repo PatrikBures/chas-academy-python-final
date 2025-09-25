@@ -241,6 +241,8 @@ def remove_alarm():
         alarms.pop(idx)
         removed_alarms += 1
 
+    storage.save_alarms(alarms)
+
     menu.confirm_return(f"\nRemoved {removed_alarms} alarm/s. ")
 
 def _exit():
