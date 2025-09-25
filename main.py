@@ -23,10 +23,15 @@ is_monitoring = False
 
 
 def get_usage():
+    try:
+        disk_usage = psutil.disk_usage("/")
+    except FileNotFoundError:
+        disk_usage = None
+
     return {
         AlarmTypes.CPU: psutil.cpu_percent(interval=1),
         AlarmTypes.RAM: psutil.virtual_memory(),
-        AlarmTypes.DISK: psutil.disk_usage('/')
+        AlarmTypes.DISK: disk_usage
     }
 
 def bytes_to_gb(num):
@@ -69,14 +74,17 @@ def list_active_monitor():
             f"{bytes_to_gb(usage[AlarmTypes.RAM].total)} GB"
         ]
     )
-    table.add_row(
-        [
-            "DISK",
-            f"{usage[AlarmTypes.DISK].percent}%",
-            f"{bytes_to_gb(usage[AlarmTypes.DISK].used)} GB",
-            f"{bytes_to_gb(usage[AlarmTypes.DISK].total)} GB"
-        ]
-    )
+    if usage[AlarmTypes.DISK] is not None:
+        table.add_row(
+            [
+                "DISK",
+                f"{usage[AlarmTypes.DISK].percent}%",
+                f"{bytes_to_gb(usage[AlarmTypes.DISK].used)} GB",
+                f"{bytes_to_gb(usage[AlarmTypes.DISK].total)} GB"
+            ]
+        )
+    else:
+        table.add_row(["DISK", "N/A", "N/A", "N/A"])
 
     print(table)
 
@@ -162,7 +170,11 @@ def start_monitoring_mode():
             usage_current = get_usage()
 
             usage_current[AlarmTypes.RAM] = usage_current[AlarmTypes.RAM].percent
-            usage_current[AlarmTypes.DISK] = usage_current[AlarmTypes.DISK].percent
+
+            if usage_current[AlarmTypes.DISK] is not None:
+                usage_current[AlarmTypes.DISK] = usage_current[AlarmTypes.DISK].percent
+            else:
+                usage_current[AlarmTypes.DISK] = 0.0
 
             usage_warning = {
                 AlarmTypes.CPU: 0.0,
