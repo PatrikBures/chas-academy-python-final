@@ -217,6 +217,8 @@ def start_monitoring_mode():
         except KeyboardInterrupt:
             break
 
+    log("monitoring_mode_stopped")
+
 def remove_alarm():
     if not alarms:
         menu.confirm_return("No alarms to remove. ")
