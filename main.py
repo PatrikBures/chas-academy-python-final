@@ -1,7 +1,7 @@
 from prettytable import PrettyTable
 import psutil
 
-from enum import Enum
+from enum import IntEnum
 from time import sleep
 from platform import system
 
@@ -10,7 +10,7 @@ import storage
 from custom_logging import *
 
 
-class AlarmTypes(Enum):
+class AlarmTypes(IntEnum):
     CPU = 0
     RAM = 1
     DISK = 2
@@ -246,7 +246,11 @@ def _exit():
 
 def main():
     global alarms
+    print(f"{AlarmTypes.CPU.name} -- {type(AlarmTypes.CPU.name)}-- {AlarmTypes.CPU.value}")
+
     alarms = storage.load_alarms()
+    for alarm in alarms:
+        print(alarm.type)
     create_log_file()
 
     actions = {
