@@ -246,11 +246,7 @@ def _exit():
 
 def main():
     global alarms
-    print(f"{AlarmTypes.CPU.name} -- {type(AlarmTypes.CPU.name)}-- {AlarmTypes.CPU.value}")
-
     alarms = storage.load_alarms()
-    for alarm in alarms:
-        print(alarm.type)
     create_log_file()
 
     actions = {
