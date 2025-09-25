@@ -76,18 +76,7 @@ def select_multi_option(options: list, title = ""):
         if is_invalid:
             continue
 
-        return selected_options_int
-
-
-
-        
-
-
-
-
-
-
-
+        return sorted(selected_options_int)
 
 def select_action(actions, title = ""):
     options = []
