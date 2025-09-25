@@ -239,6 +239,9 @@ def _exit():
     return True
 
 def main():
+    global alarms
+    alarms = storage.load_alarms()
+
     actions = {
         "Start monitoring": start_monitoring,
         "List active monitor": list_active_monitor,
