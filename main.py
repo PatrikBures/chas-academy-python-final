@@ -1,15 +1,16 @@
 from prettytable import PrettyTable
 import psutil
 
-from enum import Enum
+from enum import IntEnum
 from time import sleep
 from platform import system
 
 import menu
 import storage
+from custom_logging import *
 
 
-class AlarmTypes(Enum):
+class AlarmTypes(IntEnum):
     CPU = 0
     RAM = 1
     DISK = 2
@@ -117,6 +118,7 @@ def create_alarm():
             new_alarm = Alarm(new_alarm_type, new_alarm_threshold)
             alarms.append(new_alarm)
             storage.save_alarms(alarms)
+            log(f"{new_alarm.type.name}_{new_alarm.threshold}_alarm_created")
 
 
     def cpu():
@@ -165,6 +167,8 @@ def start_monitoring_mode():
         menu.confirm_return("No alarms configured. ")
         return
 
+    log("monitoring_mode_started")
+
     loop_max = 20
     loop_num = loop_max
 
@@ -202,6 +206,7 @@ def start_monitoring_mode():
                     continue
 
                 print(f"*** WARNING, {type.name} USAGE IS ABOVE OR {usage_warning[type]}% ***")
+                log(f"{type.name}_{usage_warning[type]}_alarm_activated")
                 warned = True
 
             if warned:
@@ -211,6 +216,8 @@ def start_monitoring_mode():
 
         except KeyboardInterrupt:
             break
+
+    log("monitoring_mode_stopped")
 
 def remove_alarm():
     if not alarms:
@@ -230,6 +237,7 @@ def remove_alarm():
     removed_alarms = 0
 
     for idx in reversed(indexes_to_delete):
+        log(f"{alarms[idx].type.name}_{alarms[idx].threshold}_alarm_deleted")
         alarms.pop(idx)
         removed_alarms += 1
 
@@ -241,6 +249,7 @@ def _exit():
 def main():
     global alarms
     alarms = storage.load_alarms()
+    create_log_file()
 
     actions = {
         "Start monitoring": start_monitoring,
