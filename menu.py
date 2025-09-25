@@ -66,7 +66,7 @@ def select_multi_option(options: list, title = ""):
                 is_invalid = True
                 break
 
-            if 0 < opt <= len(options):
+            if 0 < opt <= len(options) and opt-1 not in selected_options_int:
                 selected_options_int.append(opt-1)
             else:
                 print(f"Number {opt} is not in range.")
