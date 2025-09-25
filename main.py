@@ -6,6 +6,7 @@ from time import sleep
 from platform import system
 
 import menu
+import storage
 
 
 class AlarmTypes(Enum):
@@ -115,6 +116,8 @@ def create_alarm():
         if confirmed:
             new_alarm = Alarm(new_alarm_type, new_alarm_threshold)
             alarms.append(new_alarm)
+            storage.save_alarms(alarms)
+
 
     def cpu():
         create_new_alarm(AlarmTypes.CPU)
