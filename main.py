@@ -7,6 +7,7 @@ from platform import system
 
 import menu
 import storage
+from custom_logging import *
 
 
 class AlarmTypes(Enum):
@@ -241,6 +242,7 @@ def _exit():
 def main():
     global alarms
     alarms = storage.load_alarms()
+    create_log_file()
 
     actions = {
         "Start monitoring": start_monitoring,
