@@ -4,6 +4,7 @@ import psutil
 
 from enum import Enum
 from time import sleep
+from platform import system
 
 import menu
 
@@ -23,8 +24,13 @@ is_monitoring = False
 
 
 def get_usage():
+    root_path = "/"
+
+    if system() == "Windows":
+        root_path = "C:\\"
+
     try:
-        disk_usage = psutil.disk_usage("/")
+        disk_usage = psutil.disk_usage(root_path)
     except FileNotFoundError:
         disk_usage = None
 
