@@ -29,7 +29,7 @@ def get_usage():
         AlarmTypes.DISK: psutil.disk_usage('/')
     }
 
-def convert_to_gb(num):
+def bytes_to_gb(num):
     return round(num / 1024 / 1024 / 1024, 2)
 
 def start_monitoring():
@@ -65,16 +65,16 @@ def list_active_monitor():
         [
             "RAM",
             f"{usage[AlarmTypes.RAM].percent}%",
-            f"{convert_to_gb(usage[AlarmTypes.RAM].used)} GB",
-            f"{convert_to_gb(usage[AlarmTypes.RAM].total)} GB"
+            f"{bytes_to_gb(usage[AlarmTypes.RAM].used)} GB",
+            f"{bytes_to_gb(usage[AlarmTypes.RAM].total)} GB"
         ]
     )
     table.add_row(
         [
             "DISK",
             f"{usage[AlarmTypes.DISK].percent}%",
-            f"{convert_to_gb(usage[AlarmTypes.DISK].used)} GB",
-            f"{convert_to_gb(usage[AlarmTypes.DISK].total)} GB"
+            f"{bytes_to_gb(usage[AlarmTypes.DISK].used)} GB",
+            f"{bytes_to_gb(usage[AlarmTypes.DISK].total)} GB"
         ]
     )
 
