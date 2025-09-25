@@ -1,8 +1,9 @@
 from simple_term_menu import TerminalMenu
 from prettytable import PrettyTable
+import psutil
+
 from enum import Enum
 from time import sleep
-import psutil
 
 import menu
 
@@ -31,8 +32,6 @@ def get_usage():
 def convert_to_gb(num):
     return round(num / 1024 / 1024 / 1024, 2)
 
-
-
 def start_monitoring():
     global is_monitoring
 
@@ -54,9 +53,30 @@ def list_active_monitor():
     table.align["Usage"] = "r"
     table.align["Total"] = "r"
 
-    table.add_row(["CPU", f"{usage[AlarmTypes.CPU]}%", "N/A", "N/A"])
-    table.add_row(["RAM", f"{usage[AlarmTypes.RAM].percent}%", f"{convert_to_gb(usage[AlarmTypes.RAM].used)} GB", f"{convert_to_gb(usage[AlarmTypes.RAM].total)} GB"])
-    table.add_row(["DISK", f"{usage[AlarmTypes.DISK].percent}%", f"{convert_to_gb(usage[AlarmTypes.DISK].used)} GB", f"{convert_to_gb(usage[AlarmTypes.DISK].total)} GB"])
+    table.add_row(
+        [
+            "CPU",
+            f"{usage[AlarmTypes.CPU]}%",
+            "N/A",
+            "N/A"
+        ]
+    )
+    table.add_row(
+        [
+            "RAM",
+            f"{usage[AlarmTypes.RAM].percent}%",
+            f"{convert_to_gb(usage[AlarmTypes.RAM].used)} GB",
+            f"{convert_to_gb(usage[AlarmTypes.RAM].total)} GB"
+        ]
+    )
+    table.add_row(
+        [
+            "DISK",
+            f"{usage[AlarmTypes.DISK].percent}%",
+            f"{convert_to_gb(usage[AlarmTypes.DISK].used)} GB",
+            f"{convert_to_gb(usage[AlarmTypes.DISK].total)} GB"
+        ]
+    )
 
     print(table)
 
@@ -106,7 +126,6 @@ def create_alarm():
     }
 
     menu.select_action(actions, "Select alarm to configure")
-
 
 def show_alarm():
     if not alarms:
@@ -173,7 +192,6 @@ def start_monitoring_mode():
         except KeyboardInterrupt:
             break
 
-
 def remove_alarm():
     if not alarms:
         menu.confirm_return("No alarms to remove. ")
@@ -200,7 +218,6 @@ def remove_alarm():
 
     menu.confirm_return(f"Removed {removed_alarms} alarm/s. ")
 
-
 def _exit():
     return True
 
@@ -214,7 +231,6 @@ def main():
         "Remove alarm": remove_alarm,
         "Exit": _exit
     }
-
 
     while True:
         exit_loop = menu.select_action(actions)
