@@ -100,7 +100,7 @@ def create_alarm():
     def create_new_alarm(new_alarm_type: AlarmTypes):
         new_alarm_threshold = -2
 
-        new_alarm_threshold = menu.select_int_range(f"New {new_alarm_type.name} alarm (1-100)%: ", 1, 100)
+        new_alarm_threshold = menu.select_int_range(f"Pick threshold for {new_alarm_type.name} alarm (1-100)%: ", 1, 100)
 
         if new_alarm_threshold < 1:
             return True
@@ -139,7 +139,7 @@ def create_alarm():
         "Back": back
     }
 
-    menu.select_action(actions, "Select alarm to configure")
+    menu.select_action(actions, "Select alarm type to configure")
 
 def show_alarm():
     if not alarms:
@@ -234,7 +234,7 @@ def remove_alarm():
             alarms.pop(idx)
             removed_alarms += 1
 
-    menu.confirm_return(f"Removed {removed_alarms} alarm/s. ")
+    menu.confirm_return(f"\nRemoved {removed_alarms} alarm/s. ")
 
 def _exit():
     return True
