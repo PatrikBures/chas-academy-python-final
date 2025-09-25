@@ -37,6 +37,57 @@ def confirm(question):
             case "n":
                 return False
 
+def select_multi_option(options: list, title = ""):
+    while True:
+
+        print()
+
+        if title:
+            print(title)
+
+        for idx in range(len(options)):
+            print(f"{idx+1}. {options[idx]}")
+
+        try:
+            selected_options_str = input("select: ").split()
+        except KeyboardInterrupt:
+            return []
+
+        selected_options_int = []
+
+        is_invalid = False
+
+        for idx in range(len(selected_options_str)):
+            opt = selected_options_str[idx]
+            try:
+                opt = int(opt)
+            except ValueError:
+                print(f"Option \"{opt}\" is not a number.")
+                is_invalid = True
+                break
+
+            if 0 < opt <= len(options):
+                selected_options_int.append(opt-1)
+            else:
+                print(f"Number {opt} is not in range.")
+                is_invalid = True
+                break
+
+        if is_invalid:
+            continue
+
+        return selected_options_int
+
+
+
+        
+
+
+
+
+
+
+
 
 def select_action(actions, title = ""):
     options = []
