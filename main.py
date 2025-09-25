@@ -1,4 +1,3 @@
-from simple_term_menu import TerminalMenu
 from prettytable import PrettyTable
 import psutil
 
@@ -219,20 +218,17 @@ def remove_alarm():
 
     for alarm in alarms:
         options.append(f"{alarm.type.name} {alarm.threshold}%")
-    
-    terminal_menu = TerminalMenu(options, title="Pick alarms to with <Space>, then press <Enter> to delete selected alarms: ", multi_select=True)
 
-    indexes_to_delete = terminal_menu.show()
+    indexes_to_delete = menu.select_multi_option(options, title="Pick alarms to delete: ")
+
+    if not indexes_to_delete:
+        return
 
     removed_alarms = 0
 
-    if type(indexes_to_delete) == tuple:
-
-        indexes_to_delete_reversed = indexes_to_delete[::-1]
-
-        for idx in indexes_to_delete_reversed:
-            alarms.pop(idx)
-            removed_alarms += 1
+    for idx in reversed(indexes_to_delete):
+        alarms.pop(idx)
+        removed_alarms += 1
 
     menu.confirm_return(f"Removed {removed_alarms} alarm/s. ")
 
