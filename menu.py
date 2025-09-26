@@ -84,29 +84,28 @@ def select_action(actions, title = ""):
     for action in actions.keys():
         options.append(action)
 
-    while True:
-        print()
+    print()
 
-        if title:
-            print(title)
+    if title:
+        print(title)
 
-        idx = 0
-        for opt in options:
-            print(f"{idx+1}. {opt}")
+    idx = 0
+    for opt in options:
+        print(f"{idx+1}. {opt}")
 
-            idx += 1
+        idx += 1
 
-        selected_option_idx = select_int_range(f"Select option (1-{len(options)}): ", 1, len(options)) -1
+    selected_option_idx = select_int_range(f"Select option (1-{len(options)}): ", 1, len(options)) -1
 
-        if selected_option_idx < 0: # if you pressed <Ctrl+c>
+    if selected_option_idx < 0: # if you pressed <Ctrl+c>
+        return True
+
+    selected_option = options[selected_option_idx]
+
+    action = actions[selected_option]
+
+    if action:
+        exit_loop = action()
+
+        if exit_loop:
             return True
-
-        selected_option = options[selected_option_idx]
-
-        action = actions[selected_option]
-
-        if action:
-            exit_loop = action()
-
-            if exit_loop:
-                return True
