@@ -42,7 +42,7 @@ def get_system_usage():
     }
 
 def bytes_to_gb(num):
-    return round(num / 1024 / 1024 / 1024, 2)
+    return round(num / 1024**3, 2)
 
 def start_monitoring():
     global is_monitoring
