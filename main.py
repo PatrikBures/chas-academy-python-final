@@ -145,7 +145,7 @@ def create_alarm():
 
     menu.select_action(actions, "Select alarm type to configure")
 
-def show_alarm():
+def show_alarms():
     if not alarms:
         menu.confirm_return("No alarms configured. ")
         return
@@ -257,7 +257,7 @@ def main():
         "Start monitoring": start_monitoring,
         "List active monitor": list_active_monitor,
         "Create alarm": create_alarm,
-        "Show alarms": show_alarm,
+        "Show alarms": show_alarms,
         "Start monitoring mode": start_monitoring_mode,
         "Remove alarm": remove_alarm,
         "Exit": _exit
