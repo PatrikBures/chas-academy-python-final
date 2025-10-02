@@ -49,7 +49,7 @@ def select_multi_option(options: list, title = ""):
             print(f"{idx+1}. {options[idx]}")
 
         try:
-            selected_options_str = input("select: ").split()
+            selected_options_str = input("Select: ").split()
         except KeyboardInterrupt:
             return []
 
@@ -62,14 +62,14 @@ def select_multi_option(options: list, title = ""):
             try:
                 opt = int(opt)
             except ValueError:
-                print(f"Option \"{opt}\" is not a number.")
+                confirm_return(f"Option \"{opt}\" is not a number. ")
                 is_invalid = True
                 break
 
             if 0 < opt <= len(options) and opt-1 not in selected_options_int:
                 selected_options_int.append(opt-1)
             else:
-                print(f"Number {opt} is not in range.")
+                confirm_return(f"Number {opt} is not in range. ")
                 is_invalid = True
                 break
 
