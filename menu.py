@@ -82,23 +82,22 @@ def select_action(actions, title = ""):
     # this function takes in a dictionary (actions). The keys are string which is the name of the option
     # that will be shown to the user and the value is a function which will run when the options is chosen. 
 
-    options = []
-
-    for action in actions.keys():
-        options.append(action)
-
     print()
 
     if title:
         print(title)
 
+    options = []
     idx = 0
-    for opt in options:
+    for opt in actions.keys():
+        options.append(opt) # array of options so later it can pick the option based on idx
+
         print(f"{idx+1}. {opt}")
 
         idx += 1
 
-    selected_option_idx = select_int_range(f"Select option (1-{len(options)}): ", 1, len(options)) -1
+    length = len(actions)
+    selected_option_idx = select_int_range(f"Select option (1-{length}): ", 1, length) -1
 
     if selected_option_idx < 0: # if you pressed <Ctrl+c>
         return True
