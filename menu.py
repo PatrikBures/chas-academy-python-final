@@ -79,6 +79,9 @@ def select_multi_option(options: list, title = ""):
         return sorted(selected_options_int)
 
 def select_action(actions, title = ""):
+    # this function takes in a dictionary (actions). The keys are string which is the name of the option
+    # that will be shown to the user and the value is a function which will run when the options is chosen. 
+
     options = []
 
     for action in actions.keys():
