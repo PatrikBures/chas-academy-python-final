@@ -172,13 +172,13 @@ def start_monitoring_mode():
     loop_max = 20
     loop_num = loop_max
 
-    while True:
-        if loop_num >= loop_max:
-            loop_num = 0
-            print("Monitoring mode is active, press <Ctrl+c> to return to main menu.")
-        loop_num += 1
+    try: 
+        while True:
+            if loop_num >= loop_max:
+                loop_num = 0
+                print("Monitoring mode is active, press <Ctrl+c> to return to main menu.")
+            loop_num += 1
 
-        try:
             usage_current = get_system_usage()
 
             usage_current[AlarmTypes.RAM] = usage_current[AlarmTypes.RAM].percent
@@ -214,8 +214,8 @@ def start_monitoring_mode():
 
             sleep(1)
 
-        except KeyboardInterrupt:
-            break
+    except KeyboardInterrupt:
+        pass
 
     log("monitoring_mode_stopped")
 
