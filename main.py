@@ -104,7 +104,7 @@ def create_alarm():
         new_alarm_threshold = menu.select_int_range(f"Pick threshold for {new_alarm_type.name} alarm (1-100)%: ", 1, 100)
 
         if new_alarm_threshold < 1:
-            return True
+            return
 
 
         for alarm in alarms:
@@ -123,18 +123,15 @@ def create_alarm():
 
     def cpu():
         create_new_alarm(AlarmTypes.CPU)
-        return True
 
     def ram():
         create_new_alarm(AlarmTypes.RAM)
-        return True
 
     def disk():
         create_new_alarm(AlarmTypes.DISK)
-        return True
 
     def back():
-        return True
+        pass
 
     actions = {
         "CPU usage": cpu,
