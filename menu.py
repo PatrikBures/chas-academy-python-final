@@ -1,6 +1,6 @@
 def confirm_return(title = ""):
     try:
-        input(f"{title}Press <Enter> to return. ")
+        input(f"{title}Press <Enter> to continue. ")
     except KeyboardInterrupt:
         pass
 
