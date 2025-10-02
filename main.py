@@ -24,7 +24,7 @@ alarms = []
 is_monitoring = False
 
 
-def get_usage():
+def get_system_usage():
     root_path = "/"
 
     if system() == "Windows":
@@ -56,7 +56,7 @@ def list_active_monitor():
         menu.confirm_return("Monitoring is not active. ")
         return
     
-    usage = get_usage()
+    usage = get_system_usage()
 
     table = PrettyTable()
     table.field_names = ["Type", "Usage %", "Usage", "Total"]
@@ -179,7 +179,7 @@ def start_monitoring_mode():
         loop_num += 1
 
         try:
-            usage_current = get_usage()
+            usage_current = get_system_usage()
 
             usage_current[AlarmTypes.RAM] = usage_current[AlarmTypes.RAM].percent
 
