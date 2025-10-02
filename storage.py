@@ -7,6 +7,7 @@ data_path = Path("alarms.json")
 
 def save_alarms(alarms: list[Alarm]):
     data = []
+    # converts list with alarms to list with dictionaries so it can be saved to a json file
     for alarm in alarms:
         data.append({
             "type": alarm.type.name,
@@ -27,6 +28,7 @@ def load_alarms():
         data = json.load(file)
 
     count = 0
+    # converts list of dictionaries to a list of alarms
     for i in data:
         alarms.append(Alarm(alarm_type=AlarmTypes[i["type"]], threshold=i["threshold"]))
         count += 1

@@ -7,7 +7,7 @@ from platform import system
 
 import menu
 import storage
-from custom_logging import *
+from logger import *
 
 
 class AlarmTypes(IntEnum):
@@ -24,7 +24,7 @@ alarms = []
 is_monitoring = False
 
 
-def get_usage():
+def get_system_usage():
     root_path = "/"
 
     if system() == "Windows":
@@ -42,7 +42,7 @@ def get_usage():
     }
 
 def bytes_to_gb(num):
-    return round(num / 1024 / 1024 / 1024, 2)
+    return round(num / 1024**3, 2)
 
 def start_monitoring():
     global is_monitoring
@@ -56,7 +56,7 @@ def list_active_monitor():
         menu.confirm_return("Monitoring is not active. ")
         return
     
-    usage = get_usage()
+    usage = get_system_usage()
 
     table = PrettyTable()
     table.field_names = ["Type", "Usage %", "Usage", "Total"]
@@ -104,7 +104,7 @@ def create_alarm():
         new_alarm_threshold = menu.select_int_range(f"Pick threshold for {new_alarm_type.name} alarm (1-100)%: ", 1, 100)
 
         if new_alarm_threshold < 1:
-            return True
+            return
 
 
         for alarm in alarms:
@@ -123,18 +123,15 @@ def create_alarm():
 
     def cpu():
         create_new_alarm(AlarmTypes.CPU)
-        return True
 
     def ram():
         create_new_alarm(AlarmTypes.RAM)
-        return True
 
     def disk():
         create_new_alarm(AlarmTypes.DISK)
-        return True
 
     def back():
-        return True
+        pass
 
     actions = {
         "CPU usage": cpu,
@@ -145,7 +142,7 @@ def create_alarm():
 
     menu.select_action(actions, "Select alarm type to configure")
 
-def show_alarm():
+def show_alarms():
     if not alarms:
         menu.confirm_return("No alarms configured. ")
         return
@@ -172,14 +169,14 @@ def start_monitoring_mode():
     loop_max = 20
     loop_num = loop_max
 
-    while True:
-        if loop_num >= loop_max:
-            loop_num = 0
-            print("Monitoring mode is active, press <Ctrl+c> to return to main menu.")
-        loop_num += 1
+    try: 
+        while True:
+            if loop_num >= loop_max:
+                loop_num = 0
+                print("Monitoring mode is active, press <Ctrl+c> to return to main menu.")
+            loop_num += 1
 
-        try:
-            usage_current = get_usage()
+            usage_current = get_system_usage()
 
             usage_current[AlarmTypes.RAM] = usage_current[AlarmTypes.RAM].percent
 
@@ -214,8 +211,8 @@ def start_monitoring_mode():
 
             sleep(1)
 
-        except KeyboardInterrupt:
-            break
+    except KeyboardInterrupt:
+        pass
 
     log("monitoring_mode_stopped")
 
@@ -257,7 +254,7 @@ def main():
         "Start monitoring": start_monitoring,
         "List active monitor": list_active_monitor,
         "Create alarm": create_alarm,
-        "Show alarms": show_alarm,
+        "Show alarms": show_alarms,
         "Start monitoring mode": start_monitoring_mode,
         "Remove alarm": remove_alarm,
         "Exit": _exit
