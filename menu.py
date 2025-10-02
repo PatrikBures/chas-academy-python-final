@@ -107,7 +107,6 @@ def select_action(actions, title = ""):
     action = actions[selected_option]
 
     if action:
-        exit_loop = action()
+        return action() # the action will return true if it is supposed to exit the loop
+                        # which is probably just the main loop
 
-        if exit_loop:
-            return True
