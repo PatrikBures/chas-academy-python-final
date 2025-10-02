@@ -7,7 +7,7 @@ from platform import system
 
 import menu
 import storage
-from custom_logging import *
+from logger import *
 
 
 class AlarmTypes(IntEnum):
