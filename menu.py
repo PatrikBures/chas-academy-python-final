@@ -36,6 +36,7 @@ def confirm(question):
                 return True
             case "n":
                 return False
+        print("\nInvalid input.")
 
 def select_multi_option(options: list, title = ""):
     while True:
