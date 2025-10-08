@@ -40,9 +40,6 @@ class AlarmManager:
         def threshold(self):
             return self.__threshold
 
-        # def __str__(self):
-        #     return f"{self.type.name} {self.threshold}"
-
     def add_alarm(self, type: 'AlarmManager.AlarmTypes', threshold: int):
         # check if alarm exists before adding
         self.__alarms.append(AlarmManager.Alarm(type, threshold))
