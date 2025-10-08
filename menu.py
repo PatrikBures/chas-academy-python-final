@@ -77,7 +77,7 @@ def select_multi_option(options: list, title = ""):
         if is_invalid:
             continue
 
-        return sorted(selected_options_int)
+        return selected_options_int
 
 def select_action(actions, title = ""):
     # this function takes in a dictionary (actions). The keys are string which is the name of the option
@@ -101,13 +101,12 @@ def select_action(actions, title = ""):
     selected_option_idx = select_int_range(f"Select option (1-{length}): ", 1, length) -1
 
     if selected_option_idx < 0: # if you pressed <Ctrl+c>
-        return True
+        return None
 
     selected_option = options[selected_option_idx]
 
     action = actions[selected_option]
 
     if action:
-        return action() # the action will return true if it is supposed to exit the loop
+        return action   # the action will return true if it is supposed to exit the loop
                         # which is probably just the main loop
-

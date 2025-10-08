@@ -1,14 +1,13 @@
 import json
 from pathlib import Path
-from main import Alarm
-from main import AlarmTypes
+from alarm_manager import AlarmManager
 
 data_path = Path("alarms.json")
 
-def save_alarms(alarms: list[Alarm]):
+def save_alarms(am: AlarmManager):
     data = []
     # converts list with alarms to list with dictionaries so it can be saved to a json file
-    for alarm in alarms:
+    for alarm in am.alarms:
         data.append({
             "type": alarm.type.name,
             "threshold": alarm.threshold
@@ -17,11 +16,10 @@ def save_alarms(alarms: list[Alarm]):
     with open(data_path, "w") as file:
         json.dump(data, file, indent=4)
 
-def load_alarms():
+def load_alarms(am: AlarmManager):
     if not data_path.exists():
-        return []
+        return
 
-    alarms = []
     data = []
 
     with open(data_path, "r") as file:
@@ -30,9 +28,9 @@ def load_alarms():
     count = 0
     # converts list of dictionaries to a list of alarms
     for i in data:
-        alarms.append(Alarm(alarm_type=AlarmTypes[i["type"]], threshold=i["threshold"]))
+        am.add_alarm(AlarmManager.AlarmTypes[i["type"]], i["threshold"])
+        # alarms.append(Alarm(alarm_type=am.AlarmTypes[i["type"]], threshold=i["threshold"]))
         count += 1
 
     print(f"Loaded {count} alarms. ")
 
-    return alarms
