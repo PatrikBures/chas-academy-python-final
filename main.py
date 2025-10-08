@@ -4,7 +4,6 @@ import psutil
 from time import sleep
 from platform import system
 
-import alarm_manager
 import menu
 import storage
 from logger import *
