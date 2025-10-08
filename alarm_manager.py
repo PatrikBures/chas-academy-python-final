@@ -41,7 +41,6 @@ class AlarmManager:
             return self.__threshold
 
     def add_alarm(self, type: 'AlarmManager.AlarmTypes', threshold: int):
-        # check if alarm exists before adding
         self.__alarms.append(AlarmManager.Alarm(type, threshold))
 
     def remove_alarm(self, idx: int):
@@ -61,4 +60,10 @@ class AlarmManager:
             return True
         else:
             return False
+
+    def alarm_exists(self, type: AlarmTypes, threshold: int) -> bool:
+        for alarm in self.__alarms:
+            if alarm.type == type and alarm.threshold == threshold:
+                return True
+        return False
 
