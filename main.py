@@ -4,17 +4,19 @@ import psutil
 from time import sleep
 from platform import system
 
+import alarm_manager
 import menu
 import storage
 from logger import *
-from alarm_manager import AlarmManager as am
+from alarm_manager import AlarmManager
 
 
 
 is_monitoring = False
 
 
-def get_system_usage():
+
+def get_system_usage(am: AlarmManager):
     root_path = "/"
 
     if system() == "Windows":
@@ -34,19 +36,19 @@ def get_system_usage():
 def bytes_to_gb(num):
     return round(num / 1024**3, 2)
 
-def start_monitoring():
+def start_monitoring(am: AlarmManager):
     global is_monitoring
 
     is_monitoring = True
 
     menu.confirm_return("Monitoring started. ")
 
-def list_active_monitor():
+def list_active_monitor(am: AlarmManager):
     if not is_monitoring:
         menu.confirm_return("Monitoring is not active. ")
         return
     
-    usage = get_system_usage()
+    usage = get_system_usage(am)
 
     table = PrettyTable()
     table.field_names = ["Type", "Usage %", "Usage", "Total"]
@@ -87,8 +89,8 @@ def list_active_monitor():
 
     menu.confirm_return()
 
-def create_alarm():
-    def create_new_alarm(new_alarm_type: am.AlarmTypes):
+def create_alarm(am: AlarmManager):
+    def create_new_alarm(am: AlarmManager, new_alarm_type: AlarmManager.AlarmTypes):
         new_alarm_threshold = -2
 
         new_alarm_threshold = menu.select_int_range(f"Pick threshold for {new_alarm_type.name} alarm (1-100)%: ", 1, 100)
@@ -97,7 +99,7 @@ def create_alarm():
             return
 
 
-        for alarm in alarms:
+        for alarm in am.alarms:
             if alarm.type == new_alarm_type and alarm.threshold == new_alarm_threshold:
                 menu.confirm_return(f"{new_alarm_type.name} alarm with threshold {new_alarm_threshold}% already exists. ")
                 return
@@ -105,20 +107,19 @@ def create_alarm():
         confirmed = menu.confirm(f"Creating new alarm for {new_alarm_type.name} with threshold {new_alarm_threshold}%, are you sure?")
 
         if confirmed:
-            new_alarm = am.Alarm(new_alarm_type, new_alarm_threshold)
-            alarms.append(new_alarm)
-            storage.save_alarms(alarms)
-            log(f"{new_alarm.type.name}_{new_alarm.threshold}_alarm_created")
+            am.add_alarm(new_alarm_type, new_alarm_threshold)
+            storage.save_alarms(am)
+            log(f"{new_alarm_type.name}_{new_alarm_threshold}_alarm_created")
 
 
     def cpu():
-        create_new_alarm(am.AlarmTypes.CPU)
+        create_new_alarm(am, AlarmManager.AlarmTypes.CPU)
 
     def ram():
-        create_new_alarm(am.AlarmTypes.RAM)
+        create_new_alarm(am, AlarmManager.AlarmTypes.RAM)
 
     def disk():
-        create_new_alarm(am.AlarmTypes.DISK)
+        create_new_alarm(am, AlarmManager.AlarmTypes.DISK)
 
     def back():
         pass
@@ -130,10 +131,14 @@ def create_alarm():
         "Back": back
     }
 
-    menu.select_action(actions, "Select alarm type to configure")
+    selected_action = menu.select_action(actions, "Select alarm type to configure")
 
-def show_alarms():
-    if not alarms:
+    if selected_action:
+        selected_action()
+
+
+def show_alarms(am: AlarmManager):
+    if not am.has_alarms():
         menu.confirm_return("No alarms configured. ")
         return
 
@@ -142,15 +147,15 @@ def show_alarms():
     table.align["Type"] = "l"
     table.align["Threshold"] = "r"
 
-    for alarm in sorted(alarms, key=lambda x: x.threshold):
+    for alarm in sorted(am.alarms, key=lambda x: x.threshold):
         table.add_row([alarm.type.name, f"{alarm.threshold}%"])
 
     print(table)
 
     menu.confirm_return()
 
-def start_monitoring_mode():
-    if not alarms:
+def start_monitoring_mode(am: AlarmManager):
+    if not am.has_alarms():
         menu.confirm_return("No alarms configured. ")
         return
 
@@ -166,7 +171,7 @@ def start_monitoring_mode():
                 print("Monitoring mode is active, press <Ctrl+c> to return to main menu.")
             loop_num += 1
 
-            usage_current = get_system_usage()
+            usage_current = get_system_usage(am)
 
             usage_current[am.AlarmTypes.RAM] = usage_current[am.AlarmTypes.RAM].percent
 
@@ -181,7 +186,7 @@ def start_monitoring_mode():
                 am.AlarmTypes.DISK: 0.0
             }
 
-            for alarm in alarms:
+            for alarm in am.alarms:
                 # print(f"{type.name}, current: {usage_current[type]}%, alarm: {percentage}%, warning: {usage_warning[type]}%")
                 if usage_current[alarm.type] >= alarm.threshold and usage_current[alarm.type] > usage_warning[alarm.type]:
                     usage_warning[alarm.type] = alarm.threshold
@@ -206,14 +211,14 @@ def start_monitoring_mode():
 
     log("monitoring_mode_stopped")
 
-def remove_alarm():
-    if not alarms:
+def remove_alarm(am):
+    if not am.has_alarms:
         menu.confirm_return("No alarms to remove. ")
         return
 
     options = []
 
-    for alarm in alarms:
+    for alarm in am.alarms:
         options.append(f"{alarm.type.name} {alarm.threshold}%")
 
     indexes_to_delete = menu.select_multi_option(options, title="Pick alarms to delete: ")
@@ -224,19 +229,20 @@ def remove_alarm():
     removed_alarms = 0
 
     for idx in reversed(indexes_to_delete):
-        log(f"{alarms[idx].type.name}_{alarms[idx].threshold}_alarm_deleted")
-        alarms.pop(idx)
+        log(f"{am.alarms[idx].type.name}_{am.alarms[idx].threshold}_alarm_deleted")
+        am.remove_alarm(idx)
         removed_alarms += 1
 
-    storage.save_alarms(alarms)
+    storage.save_alarms(am)
 
     menu.confirm_return(f"\nRemoved {removed_alarms} alarm/s. ")
 
-def _exit():
+def _exit(am: AlarmManager):
     return True
 
 def main():
-    alarms = storage.load_alarms()
+    am = AlarmManager()
+    storage.load_alarms(am)
     create_log_file()
 
     actions = {
@@ -249,8 +255,16 @@ def main():
         "Exit": _exit
     }
 
+    exit_loop = False
     while True:
-        exit_loop = menu.select_action(actions)
+
+        selected_action = menu.select_action(actions)
+
+        if not selected_action:
+            print("no function to run")
+            return
+
+        exit_loop = selected_action(am)
 
         if exit_loop:
             break
