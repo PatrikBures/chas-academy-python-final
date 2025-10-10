@@ -9,9 +9,6 @@ class AlarmManager:
     def __init__(self) -> None:
         self.__alarms = []
 
-    # def __iter__(self):
-    #     return iter(self.__alarms)
-    
     @property
     def alarms(self):
         return self.__alarms
