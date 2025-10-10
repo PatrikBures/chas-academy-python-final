@@ -35,7 +35,7 @@ def get_system_usage(am: AlarmManager):
 def bytes_to_gb(num):
     return round(num / 1024**3, 2)
 
-def start_monitoring(am: AlarmManager):
+def start_monitoring():
     global is_monitoring
 
     is_monitoring = True
@@ -123,16 +123,13 @@ def create_alarm(am: AlarmManager):
         pass
 
     actions = {
-        "CPU usage": cpu,
-        "Ram usage": ram,
-        "Disk usage": disk,
-        "Back": back
+        "CPU usage": lambda: cpu(),
+        "Ram usage": lambda: ram(),
+        "Disk usage": lambda: disk(),
+        "Back": lambda: back()
     }
 
-    selected_action = menu.select_action(actions, "Select alarm type to configure")
-
-    if selected_action:
-        selected_action()
+    menu.select_action(actions, "Select alarm type to configure")
 
 
 def show_alarms(am: AlarmManager):
@@ -235,7 +232,7 @@ def remove_alarm(am):
 
     menu.confirm_return(f"\nRemoved {removed_alarms} alarm/s. ")
 
-def _exit(am: AlarmManager):
+def _exit():
     return True
 
 def main():
@@ -244,25 +241,19 @@ def main():
     create_log_file()
 
     actions = {
-        "Start monitoring": start_monitoring,
-        "List active monitor": list_active_monitor,
-        "Create alarm": create_alarm,
-        "Show alarms": show_alarms,
-        "Start monitoring mode": start_monitoring_mode,
-        "Remove alarm": remove_alarm,
-        "Exit": _exit
+        "Start monitoring":         lambda: start_monitoring(),
+        "List active monitor":      lambda: list_active_monitor(am),
+        "Create alarm":             lambda: create_alarm(am),
+        "Show alarms":              lambda: show_alarms(am),
+        "Start monitoring mode":    lambda: start_monitoring_mode(am),
+        "Remove alarm":             lambda: remove_alarm(am),
+        "Exit":                     lambda: _exit()
     }
 
     exit_loop = False
     while True:
 
-        selected_action = menu.select_action(actions)
-
-        if not selected_action:
-            print("no function to run")
-            return
-
-        exit_loop = selected_action(am)
+        exit_loop = menu.select_action(actions)
 
         if exit_loop:
             break

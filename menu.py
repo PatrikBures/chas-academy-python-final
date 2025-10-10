@@ -101,12 +101,11 @@ def select_action(actions, title = ""):
     selected_option_idx = select_int_range(f"Select option (1-{length}): ", 1, length) -1
 
     if selected_option_idx < 0: # if you pressed <Ctrl+c>
-        return None
+        return True
 
     selected_option = options[selected_option_idx]
 
     action = actions[selected_option]
 
-    if action:
-        return action   # the action will return true if it is supposed to exit the loop
+    return action()     # the action will return true if it is supposed to exit the loop
                         # which is probably just the main loop
