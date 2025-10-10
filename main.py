@@ -183,7 +183,7 @@ def start_monitoring_mode(am: AlarmManager):
 
             for alarm in am.alarms:
                 # print(f"{type.name}, current: {usage_current[type]}%, alarm: {percentage}%, warning: {usage_warning[type]}%")
-                if usage_current[alarm.type] >= alarm.threshold and usage_current[alarm.type] > usage_warning[alarm.type]:
+                if usage_current[alarm.type] > alarm.threshold and usage_current[alarm.type] > usage_warning[alarm.type]:
                     usage_warning[alarm.type] = alarm.threshold
 
             warned = False
@@ -192,7 +192,7 @@ def start_monitoring_mode(am: AlarmManager):
                 if usage_warning[type] <= 0.0:
                     continue
 
-                print(f"*** WARNING, {type.name} USAGE IS ABOVE OR {usage_warning[type]}% ***")
+                print(f"*** WARNING, {type.name} USAGE IS ABOVE {usage_warning[type]}% ***")
                 log(f"{type.name}_{usage_warning[type]}_alarm_activated")
                 warned = True
 
