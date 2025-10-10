@@ -238,7 +238,6 @@ def _exit():
 def main():
     am = AlarmManager()
     storage.load_alarms(am)
-    create_log_file()
 
     actions = {
         "Start monitoring":         lambda: start_monitoring(),
