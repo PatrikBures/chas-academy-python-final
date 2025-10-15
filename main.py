@@ -223,7 +223,10 @@ def remove_alarm(am):
 
     removed_alarms = 0
 
-    for idx in reversed(indexes_to_delete):
+    indexes_to_delete.sort(reverse=True)
+
+    for idx in indexes_to_delete:
+        print(idx)
         log(f"{am.alarms[idx].type.name}_{am.alarms[idx].threshold}_alarm_deleted")
         am.remove_alarm(idx)
         removed_alarms += 1

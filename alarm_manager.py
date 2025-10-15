@@ -43,12 +43,6 @@ class AlarmManager:
     def remove_alarm(self, idx: int):
         self.__alarms.pop(idx)
 
-    def remove__alarms(self, indexes: list[int]):
-        indexes.sort(reverse=True)
-
-        for idx in indexes:
-            self.__alarms.pop(idx)
-
     def set_alarms(self, new_alarms):
         self.__alarms = new_alarms
 
