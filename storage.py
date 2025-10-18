@@ -29,7 +29,6 @@ def load_alarms(am: AlarmManager):
     # converts list of dictionaries to a list of alarms
     for i in data:
         am.add_alarm(AlarmManager.AlarmTypes[i["type"]], i["threshold"])
-        # alarms.append(Alarm(alarm_type=am.AlarmTypes[i["type"]], threshold=i["threshold"]))
         count += 1
 
     print(f"Loaded {count} alarms. ")
