@@ -7,7 +7,7 @@ from platform import system
 import menu
 import storage
 from logger import *
-from alarm_manager import AlarmManager
+from alarm_manager import AlarmManager, AlarmTypes
 
 
 
@@ -27,9 +27,9 @@ def get_system_usage(am: AlarmManager):
         disk_usage = None
 
     return {
-        am.AlarmTypes.CPU: psutil.cpu_percent(interval=1),
-        am.AlarmTypes.RAM: psutil.virtual_memory(),
-        am.AlarmTypes.DISK: disk_usage
+        AlarmTypes.CPU: psutil.cpu_percent(interval=1),
+        AlarmTypes.RAM: psutil.virtual_memory(),
+        AlarmTypes.DISK: disk_usage
     }
 
 def bytes_to_gb(num):
@@ -59,7 +59,7 @@ def list_active_monitor(am: AlarmManager):
     table.add_row(
         [
             "CPU",
-            f"{usage[am.AlarmTypes.CPU]}%",
+            f"{usage[AlarmTypes.CPU]}%",
             "N/A",
             "N/A"
         ]
@@ -67,18 +67,18 @@ def list_active_monitor(am: AlarmManager):
     table.add_row(
         [
             "RAM",
-            f"{usage[am.AlarmTypes.RAM].percent}%",
-            f"{bytes_to_gb(usage[am.AlarmTypes.RAM].used)} GB",
-            f"{bytes_to_gb(usage[am.AlarmTypes.RAM].total)} GB"
+            f"{usage[AlarmTypes.RAM].percent}%",
+            f"{bytes_to_gb(usage[AlarmTypes.RAM].used)} GB",
+            f"{bytes_to_gb(usage[AlarmTypes.RAM].total)} GB"
         ]
     )
-    if usage[am.AlarmTypes.DISK] is not None:
+    if usage[AlarmTypes.DISK] is not None:
         table.add_row(
             [
                 "DISK",
-                f"{usage[am.AlarmTypes.DISK].percent}%",
-                f"{bytes_to_gb(usage[am.AlarmTypes.DISK].used)} GB",
-                f"{bytes_to_gb(usage[am.AlarmTypes.DISK].total)} GB"
+                f"{usage[AlarmTypes.DISK].percent}%",
+                f"{bytes_to_gb(usage[AlarmTypes.DISK].used)} GB",
+                f"{bytes_to_gb(usage[AlarmTypes.DISK].total)} GB"
             ]
         )
     else:
@@ -89,7 +89,7 @@ def list_active_monitor(am: AlarmManager):
     menu.confirm_return()
 
 def create_alarm(am: AlarmManager):
-    def create_new_alarm(am: AlarmManager, new_alarm_type: AlarmManager.AlarmTypes):
+    def create_new_alarm(am: AlarmManager, new_alarm_type: AlarmTypes):
         new_alarm_threshold = -2
 
         new_alarm_threshold = menu.select_int_range(f"Pick threshold for {new_alarm_type.name} alarm (1-100)%: ", 1, 100)
@@ -111,13 +111,13 @@ def create_alarm(am: AlarmManager):
 
 
     def cpu():
-        create_new_alarm(am, AlarmManager.AlarmTypes.CPU)
+        create_new_alarm(am, AlarmTypes.CPU)
 
     def ram():
-        create_new_alarm(am, AlarmManager.AlarmTypes.RAM)
+        create_new_alarm(am, AlarmTypes.RAM)
 
     def disk():
-        create_new_alarm(am, AlarmManager.AlarmTypes.DISK)
+        create_new_alarm(am, AlarmTypes.DISK)
 
     def back():
         pass
@@ -168,17 +168,17 @@ def start_monitoring_mode(am: AlarmManager):
 
             usage_current = get_system_usage(am)
 
-            usage_current[am.AlarmTypes.RAM] = usage_current[am.AlarmTypes.RAM].percent
+            usage_current[AlarmTypes.RAM] = usage_current[AlarmTypes.RAM].percent
 
-            if usage_current[am.AlarmTypes.DISK] is not None:
-                usage_current[am.AlarmTypes.DISK] = usage_current[am.AlarmTypes.DISK].percent
+            if usage_current[AlarmTypes.DISK] is not None:
+                usage_current[AlarmTypes.DISK] = usage_current[AlarmTypes.DISK].percent
             else:
-                usage_current[am.AlarmTypes.DISK] = 0.0
+                usage_current[AlarmTypes.DISK] = 0.0
 
             usage_warning = {
-                am.AlarmTypes.CPU: 0.0,
-                am.AlarmTypes.RAM: 0.0,
-                am.AlarmTypes.DISK: 0.0
+                AlarmTypes.CPU: 0.0,
+                AlarmTypes.RAM: 0.0,
+                AlarmTypes.DISK: 0.0
             }
 
             for alarm in am.alarms:
