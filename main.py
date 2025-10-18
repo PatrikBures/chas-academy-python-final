@@ -10,11 +10,6 @@ from logger import *
 from alarm_manager import AlarmManager, AlarmTypes
 
 
-
-is_monitoring = False
-
-
-
 def get_system_usage():
     root_path = "/"
 
@@ -35,15 +30,13 @@ def get_system_usage():
 def bytes_to_gb(num):
     return round(num / 1024**3, 2)
 
-def start_monitoring():
-    global is_monitoring
-
-    is_monitoring = True
+def start_monitoring(is_monitoring):
+    is_monitoring[0] = True
 
     menu.confirm_return("Monitoring started. ")
 
-def list_active_monitor():
-    if not is_monitoring:
+def list_active_monitor(is_monitoring):
+    if not is_monitoring[0]:
         menu.confirm_return("Monitoring is not active. ")
         return
     
@@ -242,10 +235,11 @@ def main():
     am = AlarmManager()
     storage.load_alarms(am)
     create_log_file()
+    is_monitoring = [False]
 
     actions = {
-        "Start monitoring":         lambda: start_monitoring(),
-        "List active monitor":      lambda: list_active_monitor(),
+        "Start monitoring":         lambda: start_monitoring(is_monitoring),
+        "List active monitor":      lambda: list_active_monitor(is_monitoring),
         "Create alarm":             lambda: create_alarm(am),
         "Show alarms":              lambda: show_alarms(am),
         "Start monitoring mode":    lambda: start_monitoring_mode(am),
