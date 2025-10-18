@@ -1,5 +1,29 @@
 from enum import IntEnum
 
+class AlarmTypes(IntEnum):
+    CPU = 0
+    RAM = 1
+    DISK = 2
+
+class Alarm:
+    def __init__(self, type: AlarmTypes, threshold: int):
+        """
+        Takes int alarmtype and int
+        :param type: AlarmTypes
+        :param threshold: 1-100 int
+        :return: None
+        """
+        self.__type: AlarmTypes = type
+        self.__threshold: int = threshold
+
+    @property
+    def type(self):
+        return self.__type
+    
+    @property
+    def threshold(self):
+        return self.__threshold
+
 class AlarmManager:
     def __new__(cls):
         if not hasattr(cls, 'instance'):
@@ -13,32 +37,8 @@ class AlarmManager:
     def alarms(self):
         return self.__alarms
 
-    class AlarmTypes(IntEnum):
-        CPU = 0
-        RAM = 1
-        DISK = 2
-
-    class Alarm:
-        def __init__(self, type: 'AlarmManager.AlarmTypes', threshold: int):
-            """
-            Takes int alarmtype and int
-            :param type: AlarmTypes
-            :param threshold: 1-100 int
-            :return: None
-            """
-            self.__type: 'AlarmManager.AlarmTypes' = type
-            self.__threshold: int = threshold
-
-        @property
-        def type(self):
-            return self.__type
-        
-        @property
-        def threshold(self):
-            return self.__threshold
-
-    def add_alarm(self, type: 'AlarmManager.AlarmTypes', threshold: int):
-        self.__alarms.append(AlarmManager.Alarm(type, threshold))
+    def add_alarm(self, type: AlarmTypes, threshold: int):
+        self.__alarms.append(Alarm(type, threshold))
 
     def remove_alarm(self, idx: int):
         self.__alarms.pop(idx)

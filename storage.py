@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from alarm_manager import AlarmManager
+from alarm_manager import AlarmManager, AlarmTypes
 
 data_path = Path("alarms.json")
 
@@ -28,7 +28,7 @@ def load_alarms(am: AlarmManager):
     count = 0
     # converts list of dictionaries to a list of alarms
     for i in data:
-        am.add_alarm(AlarmManager.AlarmTypes[i["type"]], i["threshold"])
+        am.add_alarm(AlarmTypes[i["type"]], i["threshold"])
         count += 1
 
     print(f"Loaded {count} alarms. ")
