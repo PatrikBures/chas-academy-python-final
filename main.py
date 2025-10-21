@@ -135,7 +135,7 @@ def show_alarms(am: AlarmManager):
     table.align["Type"] = "l"
     table.align["Threshold"] = "r"
 
-    for alarm in sorted(am.alarms, key=lambda x: x.threshold):
+    for alarm in sorted(am.alarms, key=lambda x: (x.type, x.threshold)):
         table.add_row([alarm.type.name, f"{alarm.threshold}%"])
 
     print(table)
