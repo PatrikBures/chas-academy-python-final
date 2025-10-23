@@ -83,11 +83,11 @@ def list_active_monitor(is_monitoring):
 
 def create_alarm(am: AlarmManager):
     def create_new_alarm(am: AlarmManager, new_alarm_type: AlarmTypes):
-        new_alarm_threshold = -2
+        new_alarm_threshold = None
 
         new_alarm_threshold = menu.select_int_range(f"Pick threshold for {new_alarm_type.name} alarm (1-100)%: ", 1, 100)
 
-        if new_alarm_threshold < 1:
+        if not new_alarm_threshold:
             return
 
 

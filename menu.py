@@ -10,7 +10,7 @@ def select_int_range(title, min, max):
         try:
             num = input(title)
         except KeyboardInterrupt:
-            return -1
+            return None
 
         try:
             num = int(num)
@@ -98,12 +98,12 @@ def select_action(actions, title = ""):
         idx += 1
 
     length = len(actions)
-    selected_option_idx = select_int_range(f"Select option (1-{length}): ", 1, length) -1
+    selected_option_idx = select_int_range(f"Select option (1-{length}): ", 1, length)
 
-    if selected_option_idx < 0: # if you pressed <Ctrl+c>
+    if not selected_option_idx: # if you pressed <Ctrl+c>
         return True
 
-    selected_option = options[selected_option_idx]
+    selected_option = options[selected_option_idx -1]
 
     action = actions[selected_option]
 
